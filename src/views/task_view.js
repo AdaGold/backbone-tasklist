@@ -1,7 +1,7 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
 import $ from 'jquery';
-import Task from '../models/task.js';
+import Task from '../models/task';
 
 const TaskView = Backbone.View.extend({
   initialize: function(params) {
