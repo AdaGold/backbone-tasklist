@@ -2,7 +2,7 @@ import Backbone from 'backbone';
 import _ from 'underscore';
 import $ from 'jquery';
 import TaskView from '../views/task_view';
-
+import Task from '../models/task'
 
 const TaskListView = Backbone.View.extend({
   initialize: function(params) {
@@ -10,22 +10,53 @@ const TaskListView = Backbone.View.extend({
     this.listenTo(this.model, 'update', this.render);
   },
   render: function() {
-    // Clear the unordered list
     this.$('#todo-items').empty();
-    // Iterate through the list rendering each Task
-    const that = this;
-    this.model.each(function(task) {
-      // Create a new TaskView with the model & template
+    this.model.each((task) => {
       const taskView = new TaskView({
         model: task,
-        template: that.template,
-        tagName: 'li'
+        template: this.template,
+        tagName: 'li',
+        className: 'task',
       });
-      // Then render the TaskView
-      // And append the resulting HTML to the DOM.
-      that.$('#todo-items').append(taskView.render().$el);
+      this.$('#todo-items').append(taskView.render().$el);
     });
     return this;
+  },
+  events: {
+    'click #add-new-task': "addTask"
+  },
+  addTask: function(event) {
+    event.preventDefault();
+    const taskData ={};
+    ['task_name', 'assignee'].forEach( (field) => {
+      const val = this.$(`#add-task-form input[name=${field}]`).val();
+      if (val != '') {
+        taskData[field] = val;
+      }
+    });
+    const newTask = new Task(taskData);
+
+    if (newTask.isValid()) {
+      this.model.add(newTask);
+      this.updateStatusMessageWith(`New task added: ${newTask.get('task_name')}`);
+    } else {
+      this.updateStatusMessageFrom(newTask.validationError);
+    }
+    this.model.add(newTask);
+  },
+  updateStatusMessageFrom: (messageHash) => {
+    $('#status-messages').empty();
+    _.each(messageHash, (messageType) => {
+      messageType.forEach((message) => {
+        $('#status-messages').append($(`<li>${message}</li>`));
+      })
+    });
+    $('#status-messages').show();
+  },
+  updateStatusMessageWith: (message) => {
+    $('#status-messages').empty();
+    $('#status-messages').append($(`<li>${message}</li>`));
+    $('#status-messages').show();
   }
 });
 
