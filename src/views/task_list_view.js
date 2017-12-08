@@ -1,15 +1,14 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
-import $ from 'jquery';
 import TaskView from '../views/task_view';
 import Task from '../models/task'
 
 const TaskListView = Backbone.View.extend({
-  initialize: function(params) {
+  initialize(params) {
     this.template = params.template;
     this.listenTo(this.model, 'update', this.render);
   },
-  render: function() {
+  render() {
     this.$('#todo-items').empty();
     this.model.each((task) => {
       const taskView = new TaskView({
@@ -51,18 +50,20 @@ const TaskListView = Backbone.View.extend({
     this.model.remove(task.model);
   },
   updateStatusMessageFrom: (messageHash) => {
-    $('#status-messages').empty();
+    const statusMessagesEl = this.$('#status-messages');
+    statusMessagesEl.empty();
     _.each(messageHash, (messageType) => {
       messageType.forEach((message) => {
-        $('#status-messages').append($(`<li>${message}</li>`));
+        statusMessagesEl.append(`<li>${message}</li>`);
       })
     });
-    $('#status-messages').show();
+    statusMessagesEl.show();
   },
   updateStatusMessageWith: (message) => {
-    $('#status-messages').empty();
-    $('#status-messages').append($(`<li>${message}</li>`));
-    $('#status-messages').show();
+    const statusMessagesEl = this.$('#status-messages');
+    statusMessagesEl.empty();
+    statusMessagesEl.append(`<li>${message}</li>`);
+    statusMessagesEl.show();
   }
 });
 

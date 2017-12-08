@@ -1,23 +1,22 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
-import $ from 'jquery';
 import Task from '../models/task';
 
 const TaskView = Backbone.View.extend({
-  initialize: function(params) {
+  initialize(params) {
     this.template = params.template;
 
     this.listenTo(this.model, "change", this.render);
   },
-  render: function() {
+  render() {
     const compiledTemplate = this.template(this.model.toJSON());
     this.$el.html(compiledTemplate);
     return this;
   },
   events: {
-    'click button.delete': 'deleteTask',
-    'click button.toggle-complete': 'toggleComplete',
-    'click': 'editTask',
+    'click .button.delete': 'deleteTask',
+    'click .button.toggle-complete': 'toggleComplete',
+    'click .button.edit': 'editTask',
   },
   deleteTask: function(e) {
     this.model.destroy();
