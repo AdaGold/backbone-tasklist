@@ -10,6 +10,11 @@ const TaskView = Backbone.View.extend({
   render() {
     const compiledTemplate = this.template(this.model.toJSON());
     this.$el.html(compiledTemplate);
+    if (this.model.get('is_complete')) {
+      this.$el.addClass('is-complete');
+    } else {
+      this.$el.removeClass('is-complete');
+    }
     return this;
   },
   events: {
@@ -23,7 +28,6 @@ const TaskView = Backbone.View.extend({
   },
   toggleComplete: function(e) {
     this.model.set('is_complete', !this.model.get('is_complete'));
-    this.$el.closest('.task').toggleClass('is-complete');
   },
   editTask: function(e) {
     this.trigger('editMe', this);
